@@ -16,17 +16,19 @@ const jQuery = require('jquery');
     'seven': [0, 0, 1000]
   };
   var slots = [
-    ['bell', 'orange', 'prune', 'orange', 'seven', 'cherry', 'bar', 'bell', 'prune'],
-    ['prune', 'orange', 'seven', 'cherry', 'bar', 'bell', 'prune', 'orange', 'cherry'],
-    ['orange', 'bell', 'orange', 'prune', 'orange', 'seven', 'cherry', 'bar', 'bell']
+    ['9', '8', '7', '6', '5', '4', '3', '2', '1'],
+    ['9', '8', '7', '6', '5', '4', '3', '2', '1'],
+    ['9', '8', '7', '6', '5', '4', '3', '2', '1']
   ];
-  var credits = 5;
+  var credits = 1;
   var points = 0;
   var spin = [0, 0, 0];
   var result = [];
   var rotateTimer;
   var count = 0;
   var allowPlay = true;
+  var numbers = [];
+
 
   var addPoints = function (el, incrementPoints) {
     var currentPoints = points;
@@ -45,11 +47,11 @@ const jQuery = require('jquery');
   };
 
 
-  var endSpin = function (el, match, pointCount, creditCount) {
+  var endSpin = function (el, match, output, creditCount) {
     var ended = 0;
     var matches = 1;
     allowPlay = false;
-    credits--;
+    credits++;
     if(match[0] === match[1]) {
       matches++;
       if(match[0] === match[2]) {
@@ -62,11 +64,8 @@ const jQuery = require('jquery');
       allowPlay = true;
       ended++;
       if(ended === 3) {
-        var winPoints = slotsTypes[match[0]][matches - 1];
-        points += winPoints;
-        if(winPoints > 0) {
-          addPoints(pointCount, winPoints);
-        }
+        var totalNumber = numbers[0] * 100 + numbers[1] * 10 + numbers[2];
+        $('#win').html(totalNumber);
       }
     });
   };
@@ -79,6 +78,7 @@ const jQuery = require('jquery');
     var creditBox = $('#credits');
     var play = $('#play');
     var wheels = $('.wheel');
+
     creditBox.html(credits);
 
 
@@ -90,11 +90,8 @@ const jQuery = require('jquery');
       var index = $this.index();
       var spinPlus = 0;
 
-
-
       play.on('click', function () {
-        //randomNumber = parseInt((Math.random() * 10),10);
-        if(credits > 0 && allowPlay) {
+        if(allowPlay) {
 
           var type = parseInt((Math.random() * 9), 10);
 
@@ -107,6 +104,7 @@ const jQuery = require('jquery');
             duration += 5000;
           }
           spinPlus += 3600;
+
           var rotateWheel = (type + 1) * 40 + spinPlus;
           if(zero < 1) {
             duration = 0;
@@ -121,6 +119,11 @@ const jQuery = require('jquery');
               result = [];
             }
           }
+
+          var number = ( rotateWheel % 360 ) / 40 + 1;
+          console.log(number);
+          numbers[index] = number;
+
           $this.css({
             MozTransitionDuration: duration + 'ms',
             WebkitTransitionDuration: duration + 'ms',
