@@ -85,24 +85,27 @@ const jQuery = require('jquery');
     // define for each wheel
     wheels.each(function () {
       var $this = $(this);
-      var randomNumber = (parseInt((Math.random() * 10), 10));
       var zero = 0;
       var index = $this.index();
       var spinPlus = 0;
+
+      function getDuration() {
+        var duration = parseInt((Math.random() * 10000), 10);
+        if (duration < 1000) {
+          duration *= 10;
+        }
+        if (duration < 5000) {
+          duration += 5000;
+        }
+        return duration;
+      }
 
       play.on('click', function () {
         if(allowPlay) {
 
           var type = parseInt((Math.random() * 9), 10);
-
-          randomNumber += type;
-          var duration = parseInt((Math.random() * 10000), 10);
-          if(duration < 1000) {
-            duration *= 10;
-          }
-          if(duration < 5000) {
-            duration += 5000;
-          }
+          if(index===0) type = 7;
+          var duration = getDuration();
           spinPlus += 3600;
 
           var rotateWheel = (type + 1) * 40 + spinPlus;
@@ -122,7 +125,12 @@ const jQuery = require('jquery');
 
           var number = ( rotateWheel % 360 ) / 40 + 1;
           console.log(number);
+          if(index === 0 && type===7) number = 0;
           numbers[index] = number;
+
+
+
+          console.log("index: " + index + ", type: " + type + ", number: " + number);
 
           $this.css({
             MozTransitionDuration: duration + 'ms',
